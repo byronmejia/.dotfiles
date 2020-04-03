@@ -1,70 +1,59 @@
-" Setup Vundle First
+"Setup Vundle First
 set nocompatible
 filetype off
 
-" One Vundle Please
-set rtp+=~/.config/nvim/bundle/Vundle.vim
-call vundle#begin()
-
 " Ensure we are using an isolated version
 " of python, due to python development
-let g:python_host_prog = '/home/byron/.virtualenvs/neovim2/bin/python'
-let g:python3_host_prog = '/home/byron/.virtualenvs/neovim3/bin/python'
+let g:python_host_prog = '/usr/local/bin/python2'
+let g:python3_host_prog = '/usr/local/bin/python3'
 
-" My Plugins
-Plugin 'VundleVim/Vundle.vim'
+set mouse=a
 
-" Pretty Stuff
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'vim-syntastic/syntastic'
-Plugin 'sickill/vim-monokai'
-Plugin 'mhinz/vim-signify'
+" One Vim Plug Please
+call plug#begin('~/.vim/plugged')
 
-" Misc
-Plugin 'godlygeek/tabular'
-Plugin 'slim-template/vim-slim'
-Plugin 'rust-lang/rust.vim'
-Plugin 'daeyun/vim-matlab'
-Plugin 'tmux-plugins/vim-tmux'
-Plugin 'jreybert/vimagit'
+" Pretty StuffQ
+Plug 'jxnblk/vim-mdx-js'
+Plug 'rakr/vim-one'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'mhinz/vim-signify'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
 " Pandoc & Friends
-Plugin 'lervag/vimtex'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'vim-pandoc/vim-pandoc'
-Plugin 'vim-pandoc/vim-pandoc-syntax'
-
-" Rubae
-Plugin 'skalnik/vim-vroom'
-Plugin 'tpope/vim-endwise'
-Plugin 'ngmy/vim-rubocop'
+Plug 'lervag/vimtex'
+Plug 'plasticboy/vim-markdown'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
 
 " Spelling
-Plugin 'rhysd/vim-grammarous'
-
-" JavaScript
-Plugin 'trkw/yarn.vim'
-Plugin 'pangloss/vim-javascript'
-
-" Misc Web
-Plugin 'digitaltoad/vim-pug'
+Plug 'rhysd/vim-grammarous'
 
 " TypeScript
-Plugin 'Shougo/deoplete.nvim'
-Plugin 'HerringtonDarkholme/yats.vim'
-Plugin 'mhartington/nvim-typescript'
+Plug 'unblevable/quick-scope'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
 
-call vundle#end()
-filetype plugin indent on
-" End Vundle Setup
+call plug#end()
+
+
+"Quick Scope
+let g:qs_highligh_on_keys = ['f', 'F', 't', 'T']
+
+let mapleader = ","
 
 " Begin personal preferences
 syntax enable
 
-set softtabstop=4
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
 set backup             " keep a backup file (restore to previous version)
 set undofile           " keep an undo file (undo changes after closing)
 set ruler              " show the cursor position all the time
@@ -80,26 +69,15 @@ set relativenumber     " Relative line numbers
 set backspace=2        " Feels like most other apps
 set history=50         " It's more than what most people need
 set autowrite          " Cause I ain't scared 
-set tabstop=2 shiftwidth=2 expandtab "This for some indents and stuff
 set ww+=<,>            " I expect the cursor to move
 set autoread           " Autoread files
+set clipboard+=unnamedplus
 
 " Check fo file changes
 au CursorHold * checktime
 
-" eslint
-let g:syntastic_javascript_checkers=['eslint']            " Use eslint as checker
-let g:syntastic_javascript_eslint_args = ['--fix']        " Run eslint with --fix
-let g:syntastic_javascript_eslint_exe='$(npm bin)/eslint' " Use node_module executable
-function! SyntasticCheckHook(errors)
-  checktime
-endfunction
-
 " Clear the search
 nnoremap <leader><space> :nohlsearch<CR>
-
-" Toggle nerdtree
-map <C-n> :NERDTreeToggle<CR>
 
 " Escape without esc
 imap ii <Esc>
@@ -110,21 +88,203 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDCompactSexyComs = 1
 let g:NERDTrimTrailingWhitespace = 1
 
-" Since I'm a JS kid
-let g:javascript_conceal_function             = "ƒ"
-let g:javascript_conceal_null                 = "ø"
-let g:javascript_conceal_this                 = "@"
-let g:javascript_conceal_return               = "⇚"
-let g:javascript_conceal_undefined            = "¿"
-let g:javascript_conceal_NaN                  = "ℕ"
-let g:javascript_conceal_prototype            = "¶"
-let g:javascript_conceal_static               = "•"
-let g:javascript_conceal_super                = "Ω"
-let g:javascript_conceal_arrow_function       = "⇒"
-let g:javascript_conceal_noarg_arrow_function = "🞅"
-let g:javascript_conceal_underscore_arrow_function = "🞅"
-set conceallevel=1
+" Toggle nerdtree
+map <C-n> :NERDTreeToggle<CR>
 
-" Enable Deoplete for TypeScript
-let g:deoplete#enable_at_startup = 1
+set wildignore+=*/node_modules/**/*
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap for do codeAction of current line
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Create mappings for function text object, requires document symbols feature of languageserver.
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+
+" Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
+nmap <silent> <C-d> <Plug>(coc-range-select)
+xmap <silent> <C-d> <Plug>(coc-range-select)
+
+" Fuzzy search git files
+nnoremap <C-p> :GFiles<CR>
+" Fuzzy search in files
+nnoremap <C-F> :Rg<CR>
+
+nnoremap <C-S-Tab> :tabprevious<CR>
+nnoremap <C-Tab> :tabnext<CR>
+
+if has("gui_vimr")
+  " Here goes some VimR specific settings like
+endif
+
+
+" if hidden is not set, TextEdit might fail.
+set hidden
+
+" Some servers have issues with backup files, see #649
+set nobackup
+set nowritebackup
+
+" Better display for messages
+set cmdheight=2
+
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" always show signcolumns
+set signcolumn=yes
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Or use `complete_info` if your vim support it, like:
+" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+
+" Remap for format selected region
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap for do codeAction of current line
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Create mappings for function text object, requires document symbols feature of languageserver.
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+
+" Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
+nmap <silent> <C-d> <Plug>(coc-range-select)
+xmap <silent> <C-d> <Plug>(coc-range-select)
+
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+nnoremap <leader>ff :Format<CR>
+
+" Use `:Fold` to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" use `:OR` for organize import of current buffer
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Add status line support, for integration with other plugin, checkout `:h coc-status`
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Using CocList
+" Show all diagnostics
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+" Me
+nnoremap <leader>nf :NERDTreeFind<CR>
+nnoremap <leader>f :Format<CR>
+
+let term_program = system('$TERM_PROGRAM')
+if term_program !~ 'Apple_Terminal'
+    colorscheme one
+endif
+
+let theme = system('defaults read -g AppleInterfaceStyle')
+if theme =~ 'Dark'
+  set background=dark
+else
+  set background=light
+endif
 

@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =4
+let g:netrw_dirhist_4='/Users/byronmejia/github.com/clipchamp/stack/frontend/apps/create/src/app/home/Account/Subscription'
+let g:netrw_dirhist_3='/Users/byronmejia/github.com/clipchamp/stack/frontend/apps/create/src/app/shared/layout/shared/account-menu/AccountMenu'
+let g:netrw_dirhist_2='/Users/byronmejia/github.com/clipchamp/stack/frontend/apps/admin/src/app/home'
+let g:netrw_dirhist_1='/Users/byronmejia'
