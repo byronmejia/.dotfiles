@@ -48,7 +48,8 @@ let g:qs_highligh_on_keys = ['f', 'F', 't', 'T']
 let mapleader = ","
 
 " Begin personal preferences
-syntax enable
+autocmd BufEnter * :syntax sync fromstart
+syntax on
 
 set tabstop=4
 set shiftwidth=4
@@ -248,9 +249,6 @@ nnoremap <leader>ff :Format<CR>
 " Use `:Fold` to fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
 " Add status line support, for integration with other plugin, checkout `:h coc-status`
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
@@ -276,15 +274,24 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 nnoremap <leader>nf :NERDTreeFind<CR>
 nnoremap <leader>f :Format<CR>
 
-let term_program = system('$TERM_PROGRAM')
-if term_program !~ 'Apple_Terminal'
-    colorscheme one
-endif
+" colorscheme onedark
+" set background=dark
+" let $BAT_THEME = 'OneHalfDark'
 
-let theme = system('defaults read -g AppleInterfaceStyle')
-if theme =~ 'Dark'
-  set background=dark
-else
-  set background=light
-endif
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 
